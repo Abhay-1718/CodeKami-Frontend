@@ -1,15 +1,21 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { LuEye, LuEyeClosed } from "react-icons/lu";
+import { AppContext } from '../../context/AppContext';
 import Illustration from '../../assets/illustration.png';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import GoogleButton from '../GoogleButton'; // Ensure it's imported correctly
 
 const AuthForm = () => {
+  const { setIsLoggedin, setUserData, backendUrl } = useContext(AppContext); // Access context
+  const navigate = useNavigate(); // Initialize navigate
   const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    phoneNumber: '',
     password: '',
     agreeToTerms: false,
     agreeToMarketing: false
@@ -23,9 +29,43 @@ const AuthForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+  
+    try {
+      if (isLogin) {
+        const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
+          email: formData.email,
+          password: formData.password,
+        });
+  
+        if (data.success) {
+          setIsLoggedin(true);
+          await setUserData();
+          navigate("/");
+        } else {
+          toast.error(data.message || "Login failed");
+        }
+      } else {
+        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+        });
+  
+        if (data.success) {
+          setIsLoggedin(true);
+          await setUserData();
+          navigate("/");
+        } else {
+          toast.error(data.message || "Registration failed");
+        }
+      }
+    } catch (error) {
+      console.error("Auth error:", error);
+      toast.error(error.response?.data?.message || error.message);
+    }
   };
 
   return (
@@ -35,14 +75,14 @@ const AuthForm = () => {
         <div className="lg:flex-1 text-white p-4 sm:p-8">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">Code smarter, not harder</h1>
           <p className="text-lg sm:text-xl text-gray-300">
-          let CodeKami review your code with AI precision!
+            Let CodeKami review your code with AI precision!
           </p>
-          
-          {/* Illustration - Hidden on very small screens */}
+
+          {/* Illustration */}
           <div className="hidden sm:block mt-8 lg:mt-12">
-            <img 
-              src={Illustration} 
-              alt="" 
+            <img
+              src={Illustration}
+              alt="Illustration"
               className="w-full max-w-md mx-auto lg:max-w-none"
             />
           </div>
@@ -54,7 +94,7 @@ const AuthForm = () => {
             {isLogin ? 'Log in' : 'Sign up now'}
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <form onSubmit={onSubmitHandler} className="space-y-4 sm:space-y-6">
             {!isLogin && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -114,11 +154,6 @@ const AuthForm = () => {
                   {showPassword ? <LuEyeClosed size={20} /> : <LuEye size={20} />}
                 </button>
               </div>
-              {!isLogin && (
-                <p className="text-gray-500 text-xs sm:text-sm mt-1">
-                  Use 8 or more characters with a mix of letters, numbers & symbols
-                </p>
-              )}
             </div>
 
             {!isLogin && (
@@ -170,7 +205,6 @@ const AuthForm = () => {
                     firstName: '',
                     lastName: '',
                     email: '',
-                    phoneNumber: '',
                     password: '',
                     agreeToTerms: false,
                     agreeToMarketing: false
@@ -181,6 +215,11 @@ const AuthForm = () => {
                 {isLogin ? 'Sign up' : 'Log in'}
               </button>
             </p>
+
+            {/* Google Button should be placed clearly separated from the rest */}
+            {/* <div className="mt-4">
+              <GoogleButton />
+            </div> */}
           </form>
         </div>
       </div>
