@@ -217,9 +217,9 @@ const AuthForm = () => {
             </p>
 
             {/* Google Button should be placed clearly separated from the rest */}
-            {/* <div className="mt-4">
+            <div className="mt-4">
               <GoogleButton />
-            </div> */}
+            </div>
           </form>
         </div>
       </div>
