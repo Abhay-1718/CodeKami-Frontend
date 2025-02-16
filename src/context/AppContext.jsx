@@ -1,3 +1,4 @@
+// context/AppContext.jsx
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -14,43 +15,43 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
   axios.defaults.withCredentials = true;
-  const backendUrl =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
-  const [isLoggedin, setIsLoggedin] = useState(
-    localStorage.getItem("token") ? true : false
-  );
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  
+  const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
 
   const getAuthState = async () => {
     try {
-      // Check if token exists in localStorage
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        axios.defaults.headers["Authorization"] = `Bearer ${token}`;
-        const { data } = await axios.get(backendUrl + "/api/auth/is-auth");
-
-        if (data.success) {
-          setIsLoggedin(true);
-          getUserData();
-        }
+      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
+      
+      if (data.success) {
+        setIsLoggedin(true);
+        await getUserData();
+      } else {
+        setIsLoggedin(false);
+        setUserData(null);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Auth state check failed:", error);
+      setIsLoggedin(false);
+      setUserData(null);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + "/api/user/data");
+      const { data } = await axios.get(`${backendUrl}/api/user/data`);
+      
+      
       if (data.success) {
         setUserData(data.userData);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Failed to get user data:", error);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
@@ -65,6 +66,7 @@ export const AppContextProvider = ({ children }) => {
     userData,
     setUserData,
     getUserData,
+    getAuthState,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
