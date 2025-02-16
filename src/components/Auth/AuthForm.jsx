@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { AppContext } from '../../context/AppContext';
-import Illustration from '../../assets/illustration.png';
+import Illustration from '../../assets/Illustration.png';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import GoogleButton from '../GoogleButton'; // Ensure it's imported correctly
