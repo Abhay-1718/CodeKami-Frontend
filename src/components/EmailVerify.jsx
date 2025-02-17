@@ -3,7 +3,6 @@ import axios from 'axios'
 import { AppContext } from '../context/AppContext'
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom'
-import email_icon from '../assets/email_icon.svg'
 
 const EmailVerify = () => {
   const inputRefs = useRef([]);
@@ -60,7 +59,7 @@ const EmailVerify = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-white dark:bg-black">
-      {/* <img src={email_icon } alt="Logo" className="absolute left-5 sm:left-20 top-5 w-auto h-5 sm:w-32 cursor-pointer" /> */}
+    
 
       <form className="bg-gray-100 dark:bg-gray-900 p-8 rounded-lg shadow-lg w-96 text-sm"
         onSubmit={onSubmitHandler}

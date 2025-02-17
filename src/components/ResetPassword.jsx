@@ -1,7 +1,4 @@
-"use client"
-
 import { useContext, useRef, useState } from "react"
-import { assets } from "../assets/asset"
 import { useNavigate } from "react-router-dom"
 import { AppContext } from "../context/AppContext"
 import axios from "axios"
@@ -99,12 +96,12 @@ const ResetPassword = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-white dark:bg-black">
-      <img
+      {/* <img
         onClick={() => navigate("/")}
         src={assets.logo || "/placeholder.svg"}
         alt="Logo"
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
-      />
+      /> */}
 
       {/* Enter Email Form */}
       {!isEmailSent && (
@@ -113,7 +110,7 @@ const ResetPassword = () => {
           <p className="text-center mb-6 text-gray-600 dark:text-gray-400">Enter your registered email address</p>
 
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
-            <img src={assets.email_icon || "/placeholder.svg"} alt="" className="w-3 h-3" />
+            {/* <img src={assets.email_icon || "/placeholder.svg"} alt="" className="w-3 h-3" /> */}
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -175,7 +172,7 @@ const ResetPassword = () => {
           <p className="text-center mb-6 text-gray-600 dark:text-gray-400">Enter the new password below</p>
 
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
-            <img src={assets.lock_icon || "/placeholder.svg"} alt="" className="w-3 h-3" />
+            {/* <img src={assets.lock_icon || "/placeholder.svg"} alt="" className="w-3 h-3" /> */}
             <input
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}

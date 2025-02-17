@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import Editor from "react-simple-code-editor"
 import prism from "prismjs"
