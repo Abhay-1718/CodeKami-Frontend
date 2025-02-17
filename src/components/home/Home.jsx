@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import Editor from "react-simple-code-editor"
 import prism from "prismjs"
 import Markdown from "react-markdown"
@@ -10,8 +10,10 @@ import { FiAlertCircle, FiCheckCircle } from "react-icons/fi"
 import { IoSparklesOutline } from "react-icons/io5"
 import { LuFileCode2, LuArrowRight } from "react-icons/lu"
 import Navbar from "../Navbar/Navbar"
+import { AppContext } from '../../context/AppContext';
 
 function Home() {
+    const { backendUrl } = useContext(AppContext); // Access context
   const [code, setCode] = useState(`function sum() {
   return 1 + 1
 }`)
@@ -29,7 +31,7 @@ function Home() {
     setIsLoading(true)
     setReviewStatus("idle")
     try {
-      const response = await axios.post("http://localhost:3000/ai/get-review", { code })
+      const response = await axios.post(`${backendUrl}/ai/get-review`, { code })
       const reviewText = response.data?.response || "No review text available"
       setReview(reviewText)
       setReviewStatus("success")
