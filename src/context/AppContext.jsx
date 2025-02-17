@@ -1,7 +1,8 @@
-// context/AppContext.jsx
+
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { VITE_BACKEND_URL } from "../constants";
 
 export const AppContext = createContext({
   backendUrl: "",
@@ -15,7 +16,7 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
   axios.defaults.withCredentials = true;
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://15.206.179.46:3000";
+  const backendUrl = VITE_BACKEND_URL || "http://15.206.179.46:3000";
   
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
