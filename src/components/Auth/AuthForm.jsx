@@ -5,7 +5,7 @@ import { AppContext } from '../../context/AppContext';
 import Illustration from '../../assets/Illustration.png';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import GoogleButton from '../GoogleButton'; // Ensure it's imported correctly
+// import GoogleButton from '../GoogleButton'; 
 
 const AuthForm = () => {
   const { setIsLoggedin, setUserData, backendUrl } = useContext(AppContext); // Access context
@@ -217,9 +217,9 @@ const AuthForm = () => {
             </p>
 
             {/* Google Button should be placed clearly separated from the rest */}
-            <div className="mt-4">
+            {/* <div className="mt-4">
               <GoogleButton />
-            </div>
+            </div> */}
           </form>
         </div>
       </div>
