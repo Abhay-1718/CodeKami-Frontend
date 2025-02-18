@@ -16,7 +16,7 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
   axios.defaults.withCredentials = true;
-  const backendUrl = VITE_BACKEND_URL || "http://15.206.179.46:3000";
+  const backendUrl = VITE_BACKEND_URL || "http://15.206.179.46:5000";
   
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
