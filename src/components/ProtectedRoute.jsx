@@ -1,11 +1,11 @@
 // components/ProtectedRoute.jsx
 import { useContext, useEffect, useState } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom'; // Import useLocation to get current route
+import { Navigate, useNavigate,} from 'react-router-dom'; // Import useLocation to get current route
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
 export const PrivateRoute = ({ children }) => {
-  const { isLoggedin,  setIsLoggedin,backendUrl } = useContext(AppContext);
+  const { isLoggedin, setIsLoggedin, backendUrl } = useContext(AppContext);
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
 
@@ -17,21 +17,22 @@ export const PrivateRoute = ({ children }) => {
         });
 
         if (!data.success) {
-          setIsLoggedin(false);
-          navigate('/auth', { replace: true });
+          setIsLoggedin(false); // User is not logged in
+          navigate('/auth', { replace: true }); // Redirect to login if not authenticated
+        } else {
+          setIsLoggedin(true); // User is logged in
         }
       } catch (error) {
         console.log(error);
-        
-        setIsLoggedin(false);
-        navigate('/auth', { replace: true });
+        setIsLoggedin(false); // User is not authenticated due to error
+        navigate('/auth', { replace: true }); // Redirect to login if authentication fails
       } finally {
         setIsChecking(false);
       }
     };
 
-    checkAuth();
-  }, []);
+    checkAuth(); // Trigger authentication check on component mount
+  }, []); // Run this effect only once, when component mounts
 
   if (isChecking) {
     return (
@@ -41,50 +42,31 @@ export const PrivateRoute = ({ children }) => {
     );
   }
 
+  if (!isLoggedin) {
+    return <Navigate to="/auth" replace />; // Redirect to /auth if user is not logged in
+  }
+
   return children;
 };
 
 export const PublicRoute = ({ children }) => {
-  const { isLoggedin, setIsLoggedin, backendUrl } = useContext(AppContext);
+  const { isLoggedin} = useContext(AppContext);
   const [isChecking, setIsChecking] = useState(true);
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location
 
   useEffect(() => {
-    // Only check authentication if we're not on the /auth page
-    if (location.pathname !== '/auth') {
-      const checkAuth = async () => {
-        try {
-          const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`, {
-            withCredentials: true,
-          });
-
-          if (data.success) {
-            setIsLoggedin(true);
-            navigate('/', { replace: true }); // Redirect to home if already authenticated
-          }
-        } catch (error) {
-          console.log(error);
-          
-          setIsLoggedin(false);
-        } finally {
-          setIsChecking(false);
-        }
-      };
-
-      checkAuth();
+    if (isLoggedin) {
+      // If user is logged in, redirect them to the home page
+      navigate('/', { replace: true });
+      setIsChecking(false); // Skip loading spinner
     } else {
-      setIsChecking(false); // Skip check if already on /auth page
+      setIsChecking(false); // User is not logged in, continue with login page
     }
-  }, [location.pathname]); // Dependency on pathname ensures the check happens on route change
+  }, [isLoggedin]); // Watch the isLoggedin state change
 
   if (isChecking) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Show loading while checking auth
   }
 
-  if (isLoggedin) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
+  return children; // Render the children if the user is not logged in
 };

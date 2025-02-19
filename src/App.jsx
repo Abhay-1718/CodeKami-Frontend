@@ -1,4 +1,3 @@
-// App.jsx
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from './components/home/Home';
 import AuthForm from './components/Auth/AuthForm';
@@ -14,6 +13,7 @@ const App = () => {
 
       <Router>
         <Routes>
+          {/* Home page, protected by PrivateRoute */}
           <Route 
             path="/" 
             element={
@@ -23,6 +23,7 @@ const App = () => {
             } 
           />
 
+          {/* Email verification page */}
           <Route 
             path="/email-verify" 
             element={
@@ -32,6 +33,7 @@ const App = () => {
             } 
           />
 
+          {/* Auth page, protected by PublicRoute */}
           <Route 
             path="/auth" 
             element={
