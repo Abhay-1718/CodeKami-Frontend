@@ -39,6 +39,8 @@ const AuthForm = () => {
           password: formData.password,
         });
   
+        console.log(data);
+        
         if (data.success) {
           setIsLoggedin(true);
           await setUserData();

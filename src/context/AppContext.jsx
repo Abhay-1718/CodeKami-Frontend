@@ -17,6 +17,9 @@ export const AppContext = createContext({
 export const AppContextProvider = ({ children }) => {
   axios.defaults.withCredentials = true;
   const backendUrl = VITE_BACKEND_URL || "https://www.codekami.online";
+  // const backendUrl =import.meta.env.VITE_BACKEND_URL;
+  // console.log(backendUrl);
+  
   
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
