@@ -1,4 +1,3 @@
-// AppContext.jsx
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,8 +15,8 @@ export const AppContext = createContext({
 });
 
 export const AppContextProvider = ({ children }) => {
-  axios.defaults.withCredentials = true;
   const backendUrl = VITE_BACKEND_URL;
+  axios.defaults.withCredentials = true; // Important for cookies
 
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -26,25 +25,22 @@ export const AppContextProvider = ({ children }) => {
   const getUserData = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/user/data`);
-      
       if (data.success) {
         setUserData(data.userData);
-      } else {
-        setUserData(null);
-        toast.error(data.message);
+        return true;
       }
+      return false;
     } catch (error) {
       console.error("Failed to get user data:", error);
-      setUserData(null);
-      toast.error(error.response?.data?.message || error.message);
+      toast.error
+      return false;
+      
     }
   };
 
   const getAuthState = async () => {
-    setIsLoading(true);
     try {
       const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
-      
       if (data.success) {
         setIsLoggedin(true);
         await getUserData();
@@ -53,7 +49,8 @@ export const AppContextProvider = ({ children }) => {
         setUserData(null);
       }
     } catch (error) {
-      console.error("Auth state check failed:", error);
+      console.log(error);
+      toast.error
       setIsLoggedin(false);
       setUserData(null);
     } finally {
@@ -65,16 +62,20 @@ export const AppContextProvider = ({ children }) => {
     getAuthState();
   }, []);
 
-  const value = {
-    backendUrl,
-    isLoggedin,
-    setIsLoggedin,
-    userData,
-    setUserData,
-    getUserData,
-    getAuthState,
-    isLoading,
-  };
-
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider
+      value={{
+        backendUrl,
+        isLoggedin,
+        setIsLoggedin,
+        userData,
+        setUserData,
+        getUserData,
+        getAuthState,
+        isLoading,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
 };
