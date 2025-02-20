@@ -1,11 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { AppContext } from '../../context/AppContext';
 import Illustration from '../../assets/Illustration.png';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
 
 const AuthForm = () => {
   const { getAuthState, backendUrl, isLoggedin } = useContext(AppContext);
@@ -21,6 +20,7 @@ const AuthForm = () => {
     agreeToTerms: false,
     agreeToMarketing: false
   });
+
   useEffect(() => {
     if (isLoggedin) {
       navigate('/');
@@ -44,7 +44,7 @@ const AuthForm = () => {
       const endpoint = isLogin ? 'login' : 'register';
       const payload = isLogin
         ? { email: formData.email, password: formData.password }
-        : { 
+        : {
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
@@ -53,11 +53,12 @@ const AuthForm = () => {
 
       const { data } = await axios.post(
         `${backendUrl}/api/auth/${endpoint}`,
-        payload,
-        { withCredentials: true }
+        payload
       );
 
       if (data.success) {
+        localStorage.setItem('token', data.token);
+        console.log("Token stored:", data.token); // Debugging log
         await getAuthState();
       } else {
         toast.error(data.message || `${isLogin ? 'Login' : 'Registration'} failed`);
@@ -69,6 +70,7 @@ const AuthForm = () => {
       setIsSubmitting(false);
     }
   };
+
   return (
     <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4 sm:p-6">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl gap-8">
@@ -182,7 +184,7 @@ const AuthForm = () => {
                     className="mt-1 mr-2"
                   />
                   <span className="text-xs sm:text-sm text-gray-600">
-                    By creating an account, I am also consenting to receive SMS messages and emails, 
+                    By creating an account, I am also consenting to receive SMS messages and emails,
                     including product new feature updates, events, and marketing promotions.
                   </span>
                 </label>
@@ -216,8 +218,6 @@ const AuthForm = () => {
                 {isLogin ? 'Sign up' : 'Log in'}
               </button>
             </p>
-
-
           </form>
         </div>
       </div>

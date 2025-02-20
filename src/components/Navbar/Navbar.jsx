@@ -1,52 +1,70 @@
-import { useContext } from "react"
-import { AppContext } from "../../context/AppContext"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
-import { toast } from "react-toastify"
-import { IoSparklesOutline } from "react-icons/io5"
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { IoSparklesOutline } from "react-icons/io5";
 
 const Navbar = () => {
-  const navigate = useNavigate()
-  const { userData, backendUrl, setUserData, setIsLoggedin } = useContext(AppContext)
+  const navigate = useNavigate();
+  const { userData, backendUrl, setUserData, setIsLoggedin } = useContext(AppContext);
 
   const logout = async () => {
     try {
-      axios.defaults.withCredentials = true
-      const { data } = await axios.post(backendUrl + "/api/auth/logout")
+      const token = localStorage.getItem('token');
+      const { data } = await axios.post(
+        `${backendUrl}/api/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (data.success) {
-        setIsLoggedin(false)
-        setUserData(null)
-        navigate("/auth")
+        localStorage.removeItem('token');
+        setIsLoggedin(false);
+        setUserData(null);
+        navigate("/auth");
       }
     } catch (error) {
-      toast.error(error.message)
-      setIsLoggedin(false)
-      setUserData(null)
-      navigate("/auth")
+      toast.error(error.message);
+      localStorage.removeItem('token');
+      setIsLoggedin(false);
+      setUserData(null);
+      navigate("/auth");
     }
-  }
+  };
 
   const sendVerificationOtp = async () => {
     try {
-      axios.defaults.withCredentials = true
-      const { data } = await axios.post(backendUrl + "/api/auth/send-verify-otp")
+      const token = localStorage.getItem('token');
+      const { data } = await axios.post(
+        `${backendUrl}/api/auth/send-verify-otp`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (data.success) {
-        navigate("/email-verify")
-        toast.success(data.message)
+        navigate("/email-verify");
+        toast.success(data.message);
       } else {
-        toast.error(data.message)
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   const getInitial = () => {
-    if (!userData || !userData.name) return "?"
-    return userData.name[0].toUpperCase()
-  }
+    if (!userData || !userData.name) return "?";
+    return userData.name[0].toUpperCase();
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md">
@@ -93,7 +111,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

@@ -1,28 +1,27 @@
-import { useState, useEffect, useContext } from "react"
-import Editor from "react-simple-code-editor"
-import prism from "prismjs"
-import Markdown from "react-markdown"
-import rehypeHighlight from "rehype-highlight"
-import axios from "axios"
-import { FaLaptopCode } from "react-icons/fa"
-import { RxMagicWand } from "react-icons/rx"
-import { FiAlertCircle, FiCheckCircle } from "react-icons/fi"
-import { IoSparklesOutline } from "react-icons/io5"
-import { LuFileCode2, LuArrowRight } from "react-icons/lu"
-import Navbar from "../Navbar/Navbar"
+import { useState, useContext, useEffect } from "react";
+import Editor from "react-simple-code-editor";
+import prism from "prismjs";
+import Markdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import axios from "axios";
+import { FaLaptopCode } from "react-icons/fa";
+import { RxMagicWand } from "react-icons/rx";
+import { FiAlertCircle, FiCheckCircle } from "react-icons/fi";
+import { IoSparklesOutline } from "react-icons/io5";
+import { LuFileCode2, LuArrowRight } from "react-icons/lu";
+import Navbar from "../Navbar/Navbar";
 import { AppContext } from '../../context/AppContext';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-    const { backendUrl, isLoggedin } = useContext(AppContext); // Access context
-
+  const { backendUrl, isLoggedin } = useContext(AppContext);
   const [code, setCode] = useState(`function sum() {
-  return 1 + 1
-}`)
-  const [review, setReview] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  const [reviewStatus, setReviewStatus] = useState("idle")
+    return 1 + 1
+  }`);
+  const [review, setReview] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [reviewStatus, setReviewStatus] = useState("idle");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,24 +31,33 @@ function Home() {
   }, [isLoggedin, navigate]);
 
   useEffect(() => {
-    prism.highlightAll()
-    setTimeout(() => setMounted(true), 100)
-  }, [])
+    prism.highlightAll();
+    setTimeout(() => setMounted(true), 100);
+  }, []);
 
   async function reviewCode() {
-    setIsLoading(true)
-    setReviewStatus("idle")
+    setIsLoading(true);
+    setReviewStatus("idle");
     try {
-      const response = await axios.post(`${backendUrl}/ai/get-review`, { code })
-      const reviewText = response.data?.response || "No review text available"
-      setReview(reviewText)
-      setReviewStatus("success")
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${backendUrl}/ai/get-review`,
+        { code },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const reviewText = response.data?.response || "No review text available";
+      setReview(reviewText);
+      setReviewStatus("success");
     } catch (error) {
-      console.error("Error reviewing code:", error)
-      setReview("Error occurred while reviewing code")
-      setReviewStatus("error")
+      console.error("Error reviewing code:", error);
+      setReview("Error occurred while reviewing code");
+      setReviewStatus("error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -224,8 +232,7 @@ function Home() {
         <div className="fixed bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-purple-200 to-blue-200 dark:from-blue-800 dark:via-purple-800 dark:to-blue-800 opacity-50" />
       </main>
     </>
-  )
+  );
 }
 
-export default Home
-
+export default Home;

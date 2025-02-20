@@ -16,17 +16,19 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
   const backendUrl = VITE_BACKEND_URL;
-
-  
-
-
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/user/data`);
+      const token = localStorage.getItem('token');
+      console.log("Token in getUserData:", token); // Debugging log
+      const { data } = await axios.get(`${backendUrl}/api/user/data`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (data.success) {
         setUserData(data.userData);
         return true;
@@ -34,19 +36,30 @@ export const AppContextProvider = ({ children }) => {
       return false;
     } catch (error) {
       console.error("Failed to get user data:", error);
-      toast.error
+      toast.error("Failed to get user data");
       return false;
-      
     }
   };
+
   useEffect(() => {
-    axios.defaults.withCredentials = true;
     getAuthState();
   }, []);
 
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
+      const token = localStorage.getItem('token');
+      console.log("Token in getAuthState:", token); // Debugging log
+      if (!token) {
+        setIsLoggedin(false);
+        setUserData(null);
+        return;
+      }
+      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Auth State Response:", data); // Debugging log
       if (data.success) {
         setIsLoggedin(true);
         await getUserData();
@@ -55,15 +68,12 @@ export const AppContextProvider = ({ children }) => {
         setUserData(null);
       }
     } catch (error) {
-      console.log(error);
-      toast.error
+      console.log("Auth State Error:", error); // Debugging log
+      toast.error("Authentication failed");
       setIsLoggedin(false);
       setUserData(null);
     }
   };
-
-
-
 
   return (
     <AppContext.Provider

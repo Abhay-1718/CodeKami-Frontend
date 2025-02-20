@@ -1,17 +1,14 @@
 import { useContext, useEffect, useRef } from "react";
-import axios from 'axios'
-import { AppContext } from '../context/AppContext'
+import axios from 'axios';
+import { AppContext } from '../context/AppContext';
 import { toast } from "react-toastify";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 const EmailVerify = () => {
   const inputRefs = useRef([]);
-  axios.defaults.withCredentials = true;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { backendUrl, isLoggedin, userData, getUserData } = useContext(AppContext);
 
-  const { backendUrl, isLoggedin, userData, getUserData } = useContext(AppContext)
-
-  
   useEffect(() => {
     if (!isLoggedin) {
       navigate('/auth');
@@ -22,52 +19,61 @@ const EmailVerify = () => {
     if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].focus();
     }
-  }
+  };
 
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
       inputRefs.current[index - 1].focus();
     }
-  }
+  };
 
   const handlePaste = (e) => {
     const paste = e.clipboardData.getData('text');
     const pasteArray = paste.split('');
     pasteArray.forEach((char, index) => {
       if (inputRefs.current[index]) {
-        inputRefs.current[index].value = char
+        inputRefs.current[index].value = char;
       }
-    })
-  }
+    });
+  };
 
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
-      const otpArray = inputRefs.current.map(e => e.value)
-      const otp = otpArray.join('')
+      const otpArray = inputRefs.current.map(e => e.value);
+      const otp = otpArray.join('');
+      const token = localStorage.getItem('token');
 
-      const { data } = await axios.post(backendUrl + '/api/auth/verify-account', { otp })
+      const { data } = await axios.post(
+        `${backendUrl}/api/auth/verify-account`,
+        { otp },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (data.success) {
-        toast.success(data.message)
+        toast.success(data.message);
         getUserData();
-        navigate('/')
+        navigate('/');
       } else {
-        toast.error(data.message)
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   useEffect(() => {
-    isLoggedin && userData && userData.isAccountVerified && navigate('/')
-  }, [isLoggedin, userData, navigate]) // Added navigate to dependencies
+    if (isLoggedin && userData && userData.isAccountVerified) {
+      navigate('/');
+    }
+  }, [isLoggedin, userData, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-white dark:bg-black">
-    
-
       <form className="bg-gray-100 dark:bg-gray-900 p-8 rounded-lg shadow-lg w-96 text-sm"
         onSubmit={onSubmitHandler}
       >
