@@ -5,4 +5,4 @@
 export const VITE_BACKEND_URL =
   location.hostname === "localhost"
     ? "http://localhost:5000"
-    : "https://www.codekami.online";
+    : "http://15.206.179.46";
