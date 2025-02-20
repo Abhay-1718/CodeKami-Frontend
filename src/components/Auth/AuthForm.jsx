@@ -8,10 +8,11 @@ import { toast } from 'react-toastify';
 
 
 const AuthForm = () => {
-  const { setIsLoggedin, setUserData, backendUrl } = useContext(AppContext); // Access context
-  const navigate = useNavigate(); // Initialize navigate
+  const { getAuthState, backendUrl } = useContext(AppContext);
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -31,44 +32,43 @@ const AuthForm = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-  
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
-      if (isLogin) {
-        const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
-          email: formData.email,
-          password: formData.password,
-        });
-  
-        console.log(data);
-        
-        if (data.success) {
-          setIsLoggedin(true);
-          await setUserData();
-          navigate("/");
-        } else {
-          toast.error(data.message || "Login failed");
-        }
+      const endpoint = isLogin ? 'login' : 'register';
+      const payload = isLogin
+        ? {
+            email: formData.email,
+            password: formData.password,
+          }
+        : {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+          };
+
+      const { data } = await axios.post(
+        `${backendUrl}/api/auth/${endpoint}`,
+        payload,
+        { withCredentials: true }
+      );
+
+      if (data.success) {
+        await getAuthState();
+        navigate('/', { replace: true });
       } else {
-        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-        });
-  
-        if (data.success) {
-          setIsLoggedin(true);
-          await setUserData();
-          navigate("/");
-        } else {
-          toast.error(data.message || "Registration failed");
-        }
+        toast.error(data.message || `${isLogin ? 'Login' : 'Registration'} failed`);
       }
     } catch (error) {
       console.error("Auth error:", error);
       toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4 sm:p-6">
