@@ -11,6 +11,13 @@ const EmailVerify = () => {
 
   const { backendUrl, isLoggedin, userData, getUserData } = useContext(AppContext)
 
+  
+  useEffect(() => {
+    if (!isLoggedin) {
+      navigate('/auth');
+    }
+  }, [isLoggedin, navigate]);
+
   const handleInput = (e, index) => {
     if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].focus();

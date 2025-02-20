@@ -16,7 +16,9 @@ export const AppContext = createContext({
 
 export const AppContextProvider = ({ children }) => {
   const backendUrl = VITE_BACKEND_URL;
-  axios.defaults.withCredentials = true; // Important for cookies
+
+  
+
 
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -37,6 +39,10 @@ export const AppContextProvider = ({ children }) => {
       
     }
   };
+  useEffect(() => {
+    axios.defaults.withCredentials = true;
+    getAuthState();
+  }, []);
 
   const getAuthState = async () => {
     try {
@@ -53,14 +59,11 @@ export const AppContextProvider = ({ children }) => {
       toast.error
       setIsLoggedin(false);
       setUserData(null);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    getAuthState();
-  }, []);
+
+
 
   return (
     <AppContext.Provider

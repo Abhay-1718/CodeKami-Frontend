@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { AppContext } from '../../context/AppContext';
@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 
 const AuthForm = () => {
-  const { getAuthState, backendUrl } = useContext(AppContext);
+  const { getAuthState, backendUrl, isLoggedin } = useContext(AppContext);
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +21,11 @@ const AuthForm = () => {
     agreeToTerms: false,
     agreeToMarketing: false
   });
+  useEffect(() => {
+    if (isLoggedin) {
+      navigate('/');
+    }
+  }, [isLoggedin, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -38,11 +43,8 @@ const AuthForm = () => {
     try {
       const endpoint = isLogin ? 'login' : 'register';
       const payload = isLogin
-        ? {
-            email: formData.email,
-            password: formData.password,
-          }
-        : {
+        ? { email: formData.email, password: formData.password }
+        : { 
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
@@ -57,7 +59,6 @@ const AuthForm = () => {
 
       if (data.success) {
         await getAuthState();
-        navigate('/', { replace: true });
       } else {
         toast.error(data.message || `${isLogin ? 'Login' : 'Registration'} failed`);
       }
@@ -68,8 +69,6 @@ const AuthForm = () => {
       setIsSubmitting(false);
     }
   };
-
-
   return (
     <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4 sm:p-6">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl gap-8">

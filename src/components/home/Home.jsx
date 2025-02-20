@@ -11,9 +11,11 @@ import { IoSparklesOutline } from "react-icons/io5"
 import { LuFileCode2, LuArrowRight } from "react-icons/lu"
 import Navbar from "../Navbar/Navbar"
 import { AppContext } from '../../context/AppContext';
+import { useNavigate } from "react-router-dom"
 
 function Home() {
-    const { backendUrl } = useContext(AppContext); // Access context
+    const { backendUrl, isLoggedin } = useContext(AppContext); // Access context
+
   const [code, setCode] = useState(`function sum() {
   return 1 + 1
 }`)
@@ -21,6 +23,13 @@ function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [reviewStatus, setReviewStatus] = useState("idle")
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedin) {
+      navigate('/auth');
+    }
+  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     prism.highlightAll()
