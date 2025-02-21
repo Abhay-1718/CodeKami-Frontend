@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { BACKEND_URL } from "../constants";
+
 
 export const AppContext = createContext({
   backendUrl: "",
@@ -15,7 +15,9 @@ export const AppContext = createContext({
 });
 
 export const AppContextProvider = ({ children }) => {
-  const backendUrl = BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_SERVER_URL;
+  console.log(backendUrl);
+  
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
