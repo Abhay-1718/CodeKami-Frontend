@@ -23,6 +23,8 @@ function Home() {
   const [mounted, setMounted] = useState(false);
   const [reviewStatus, setReviewStatus] = useState("idle");
   const navigate = useNavigate();
+  
+  
 
   useEffect(() => {
     if (!isLoggedin) {
@@ -41,12 +43,13 @@ function Home() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `${backendUrl}/ai/get-review`,
+        `${backendUrl}/api/ai/get-review`,
         { code },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
         }
       );
       const reviewText = response.data?.response || "No review text available";
@@ -60,7 +63,6 @@ function Home() {
       setIsLoading(false);
     }
   }
-
   return (
     <>
       <Navbar />
@@ -220,6 +222,7 @@ function Home() {
                       <Markdown rehypePlugins={[rehypeHighlight]} className="text-gray-800 dark:text-gray-100">
                         {review || "Your AI-powered code review will appear here..."}
                       </Markdown>
+                      
                     </div>
                   </div>
                 </div>

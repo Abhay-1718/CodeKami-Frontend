@@ -20,13 +20,13 @@ export const AppContextProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(backendUrl);
+  
   
 
   const getUserData = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log("Token in getUserData:", token); // Debugging log
+  
       const { data } = await axios.get(`${backendUrl}/api/user/data`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ export const AppContextProvider = ({ children }) => {
   const getAuthState = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log("Token in getAuthState:", token); // Debugging log
+  
       if (!token) {
         setIsLoggedin(false);
         setUserData(null);
@@ -62,7 +62,7 @@ export const AppContextProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Auth State Response:", data); // Debugging log
+      
       if (data.success) {
         setIsLoggedin(true);
         await getUserData();
