@@ -43,13 +43,12 @@ function Home() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `${backendUrl}/api/ai/get-review`,
+        `${backendUrl}/ai/get-review`,
         { code },
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       const reviewText = response.data?.response || "No review text available";
@@ -63,6 +62,7 @@ function Home() {
       setIsLoading(false);
     }
   }
+
   return (
     <>
       <Navbar />
