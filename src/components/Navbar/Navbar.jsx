@@ -67,39 +67,39 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-white dark:bg-gray-900 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20">
+    <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-black text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
-          <div className="flex items-center space-x-2 group">
-            <span className="text-2xl font-bold text-gray-800 dark:text-white transition-all duration-300 hover:text-gray-600 dark:hover:text-gray-300">
+          <div className="flex items-center group">
+            <span className="text-xl font-bold text-white transition-all duration-300 group-hover:tracking-wider">
               Codekami
             </span>
-            <IoSparklesOutline className="w-5 h-5 text-blue-500 animate-pulse" />
+            <IoSparklesOutline className="w-5 h-5 text-white ml-1 animate-pulse" />
           </div>
 
           {/* User Menu */}
           {userData && (
             <div className="relative group">
-              <button className="w-10 h-10 flex justify-center items-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white font-medium transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              <button className="w-9 h-9 flex justify-center items-center rounded-full bg-white text-black font-medium transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] focus:outline-none">
                 {getInitial()}
               </button>
 
               {/* Dropdown Menu */}
-              <div className="absolute right-0 mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out transform scale-95 group-hover:scale-100">
-                <div className="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden bg-white dark:bg-gray-800">
+              <div className="absolute right-0 mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out transform scale-95 group-hover:scale-100 z-50">
+                <div className="rounded-lg shadow-[0_5px_15px_rgba(0,0,0,0.3)] overflow-hidden bg-black border border-gray-800">
                   <div className="py-1">
                     {userData && !userData.isAccountVerified && (
                       <button
                         onClick={sendVerificationOtp}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
+                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors duration-150"
                       >
                         Send Verification OTP
                       </button>
                     )}
                     <button
                       onClick={logout}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150"
+                      className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors duration-150"
                     >
                       Logout
                     </button>
@@ -110,6 +110,8 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      {/* Border separator */}
+      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-white to-transparent opacity-20"></div>
     </nav>
   );
 };

@@ -21,11 +21,11 @@ const AuthForm = () => {
     agreeToMarketing: false
   });
 
-  useEffect(() => {
-    if (isLoggedin) {
-      navigate('/');
-    }
-  }, [isLoggedin, navigate]);
+  // useEffect(() => {
+  //   if (isLoggedin) {
+  //     navigate('/');
+  //   }
+  // }, [isLoggedin, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
