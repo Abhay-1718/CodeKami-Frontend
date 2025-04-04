@@ -9,11 +9,10 @@ import { FiAlertCircle, FiCheckCircle } from "react-icons/fi"
 import { IoSparklesOutline } from "react-icons/io5"
 import Navbar from "../Navbar/Navbar"
 import { AppContext } from "../../context/AppContext"
-import { useNavigate } from "react-router-dom"
 import Homeimage from '../../assets/asking-question.png'
 
 function Home() {
-  const { backendUrl, isLoggedin } = useContext(AppContext)
+  const { backendUrl,} = useContext(AppContext)
   const [code, setCode] = useState(`function sum() {
     return 1 + 1
   }`)
@@ -21,7 +20,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [reviewStatus, setReviewStatus] = useState("idle")
-  const navigate = useNavigate()
+
 
   useEffect(() => {
     prism.highlightAll()
@@ -112,9 +111,15 @@ function Home() {
               </div>
 
               {/* Right Column - Illustration */}
-              
-              <img src={Homeimage} className="h-full w-full" alt="" />
-
+              <div className="flex justify-center items-center animate-slideInRight">
+                <div className="relative w-full max-w-md overflow-hidden rounded-lg shadow-lg">
+                  <img 
+                    src={Homeimage} 
+                    className="object-cover w-full h-auto" 
+                    alt="AI Code Review Illustration" 
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -322,4 +327,3 @@ function Home() {
 }
 
 export default Home
-
