@@ -11,7 +11,7 @@ const AppRoutes = () => {
   const { isLoggedin, getAuthState } = useContext(AppContext);
   const navigate = useNavigate();
   const location = useLocation();
-
+  
   // Check auth state on app load
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,16 +30,24 @@ const AppRoutes = () => {
         navigate('/', { replace: true });
       }
     };
-
+    
     checkAuth();
   }, [getAuthState, navigate, location.pathname]);
-
+  
   return (
     <Routes>
-      <Route path="/auth" element={<AuthForm />} />
-      <Route path="/" element={<Home />} />
-      <Route path="/email-verify" element={<EmailVerify />} />
-      <Route path="*" element={<Navigate to={isLoggedin ? "/" : "/auth"} replace />} />
+      <Route path="/auth" element={
+        isLoggedin ? <Navigate to="/" /> : <AuthForm />
+      } />
+      <Route path="/" element={
+        isLoggedin ? <Home /> : <Navigate to="/auth" />
+      } />
+      <Route path="/email-verify" element={
+        isLoggedin ? <EmailVerify /> : <Navigate to="/auth" />
+      } />
+      <Route path="*" element={
+        isLoggedin ? <Navigate to="/" /> : <Navigate to="/auth" />
+      } />
     </Routes>
   );
 };
@@ -47,9 +55,10 @@ const AppRoutes = () => {
 const App = () => {
   return (
     <AppContextProvider>
-      <ToastContainer />
-      <Router>
+      {/* Using basename solves the 404 issue on EC2 with Apache/Nginx routing */}
+      <Router basename="/">
         <AppRoutes />
+        <ToastContainer position="bottom-right" />
       </Router>
     </AppContextProvider>
   );
