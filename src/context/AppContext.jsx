@@ -15,7 +15,7 @@ export const AppContext = createContext({
 });
 
 export const AppContextProvider = ({ children }) => {
-  const backendUrl = import.meta.env.VITE_SERVER_URL;
+  const backendUrl = import.meta.env.VITE_SERVER_URL || "https://code-kami-backend.vercel.app";
   
   
   const [isLoggedin, setIsLoggedin] = useState(false);
