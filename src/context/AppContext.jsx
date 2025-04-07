@@ -40,8 +40,7 @@ export const AppContextProvider = ({ children }) => {
       }
       return false;
     } catch (error) {
-      console.error("Failed to get user data:", error);
-      toast.error("Failed to get user data");
+
       return false;
     }
   };

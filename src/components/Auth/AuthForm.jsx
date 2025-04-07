@@ -1,5 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useContext, } from 'react';
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { AppContext } from '../../context/AppContext';
 import Illustration from '../../assets/Illustration.png';
@@ -7,8 +6,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const AuthForm = () => {
-  const { getAuthState, backendUrl, isLoggedin } = useContext(AppContext);
-  const navigate = useNavigate();
+  const { getAuthState, backendUrl } = useContext(AppContext);
   const [isLogin, setIsLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,11 +19,6 @@ const AuthForm = () => {
     agreeToMarketing: false
   });
 
-  // useEffect(() => {
-  //   if (isLoggedin) {
-  //     navigate('/');
-  //   }
-  // }, [isLoggedin, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -58,7 +51,7 @@ const AuthForm = () => {
 
       if (data.success) {
         localStorage.setItem('token', data.token);
-        console.log("Token stored:", data.token); // Debugging log
+      
         await getAuthState();
       } else {
         toast.error(data.message || `${isLogin ? 'Login' : 'Registration'} failed`);
